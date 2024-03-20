@@ -1,0 +1,127 @@
+.FilmsListElement{
+    margin: 0 auto;
+    align-items: center;
+    /*text-align: center;*/
+}
+
+.FilmsListElement p{
+    text-align: center;
+}
+
+.FilmsList{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+
+}
+
+.FilmPoster{
+    width: 350px;
+    height: 500px;
+    border-radius: 10px;
+}
+
+.filmsList-FilmTitle{
+    display: flex;
+    gap: 50px;
+}
+
+/*.FilmDescription{*/
+/*    overflow: hidden;*/
+/*    !*white-space: nowrap;*!*/
+/*    text-overflow: ellipsis;*/
+/*    height: 100px;*/
+/*    width: 300px;*/
+/*}*/
+
+.FilmsList-filmDescription{
+    margin: 0 5%;
+}
+
+.FilmsList-filmDescription p, .FilmsList-filmDescription h2{
+    text-align: left;
+}
+
+.FilmsList-filmDescription div, .FilmsList-filmDescription h2{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    width: 300px;
+}
+
+.FilmList-film{
+    color: white;
+    border: 5px solid var(--yel);
+    border-radius: 20px;
+    margin: 20px auto;
+}
+
+.genres{
+    display: flex;
+
+    list-style: none;
+    gap: 10px;
+    justify-content: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.FilmTypeList{
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.FilmTypeList li{
+    cursor: pointer;
+}
+
+.OpenMenuBtn{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.MuiSvgIcon-root{
+    color: #FFC107 !important;
+}
+
+.css-d9oaum-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input.MuiSelect-select{
+    border: 1px solid var(--yel);
+    color: var(--yel);
+}
+
+.css-e4w4as-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color: var(--yel) !important;
+    /*background: #FFC107;*/
+}
+
+.css-o943dk-MuiFormLabel-root-MuiInputLabel-root{
+    color: #FFC107 !important;
+}
+
+.css-o943dk-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color: var(--yel) !important;
+}
+
+.css-utk17j-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root.Mui-focused{
+
+}
+
+.css-utk17j-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root::after{
+    border-bottom: 1px solid yellow !important;
+}
+
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{
+    background: black !important;
+    border: 1px solid var(--yel);
+    color: var(--yel) !important;
+}
+
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper ul li{
+    border-bottom: 1px solid var(--yel) !important;
+}
+
+.css-e4w4as-MuiFormLabel-root-MuiInputLabel-root{
+    color: var(--yel) !important;
+}
