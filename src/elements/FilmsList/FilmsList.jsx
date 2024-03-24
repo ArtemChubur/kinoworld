@@ -7,6 +7,7 @@ import {FilmGenresConst} from "../../constants/FilmGenres";
 import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import {FilmCityConst} from "../../constants/FilmCity";
 import {filmYearConst} from "../../constants/FilmYear";
+import SavedSearchIcon from '@mui/icons-material/SavedSearch';
 
 
 function FilmsList() {
@@ -18,6 +19,7 @@ function FilmsList() {
     const [filtres, setFiltres] = useState({})
     const [whatApiKey, setWhatApiKey] = useState(0);
     const [searchValue, setSearchValue] = useState('')
+    const [filmListPage, setFilmListPage] = useState(1)
 
     async function getFilmsList(api_key) {
         setIsLoader(true)
@@ -30,6 +32,29 @@ function FilmsList() {
                 switchApiKey();
             }
         } finally {
+            setSearchValue('')
+            setIsLoader(false)
+        }
+    }
+    async function getFilmsListNextPage(api_key, page) {
+        const filtresArray = Object.values(filtres)
+        let filtresElements = ''
+        filtresArray.map((item) => {filtresElements = filtresElements + item})
+        setIsLoader(true)
+        try {
+            const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=30${filtresElements}&token=${api_key}&type=${filmType}`)
+            // setFilmsList(response.data.docs)
+            const addFilms = response.data.docs.map((item, idx) => {
+                filmsList.push(item)
+            })
+            console.log(filmsList)
+        } catch (e) {
+            console.log(e)
+            if (e.request.status === 403){
+                switchApiKey();
+            }
+        } finally {
+            setSearchValue('')
             setIsLoader(false)
         }
     }
@@ -47,15 +72,22 @@ function FilmsList() {
                 switchApiKey();
             }
         } finally {
+            setSearchValue('')
             setIsLoader(false)
         }
     }
 
-    async function FilmSearchName() {
+    async function FilmSearchName(apiKey) {
+        setIsLoader(true)
         try {
-            const response = await axiosInstanceKinopoisk(`movie/search?page=1&limit=100&query=${searchValue}`)
+            const response = await axiosInstanceKinopoisk(`movie/search?page=1&limit=30&token=${apiKey}&query=${searchValue}`)
+            console.log(response)
+            setFilmsList(response.data.docs)
         } catch (e){
             console.log(e)
+        } finally {
+            setSearchValue('')
+            setIsLoader(false)
         }
     }
 
@@ -71,25 +103,44 @@ function FilmsList() {
         }
     }, [filmType, filtres, whatApiKey]);
 
+    useEffect(() => {
+        getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
+    }, [filmListPage]);
+
 
 
     return (
         <section className={'FilmsListElement'}>
-            <form onSubmit={FilmSearchName}>
-                <input
-                    type="text"
-                    onChange={(e) => {
-                        setSearchValue(e.target.value)
-                    }}
-                />
-            </form>
-            <div>
+            <div className={'search'}>
+                <label>
+                    <input
+                        value={searchValue}
+                        className={'SearchInp'}
+                        type="text"
+                        onChange={(e) => {
+                            setSearchValue(e.target.value)
+                        }}
+                        placeholder={'Введите название'}
+                    />
+                    <button
+                        type="button"
+                        className={'SearchBtn'}
+                        onClick={() => {
+                            FilmSearchName(api_keys[whatApiKey])
+                        }}
+                    >
+                        <SavedSearchIcon/>
+                    </button>
+                </label>
+            </div>
+            <div className={'filtresDiv'}>
                 <ul className={'FilmTypeList'}>
                     <li
                         onClick={() => {
                             setFilmType('')
                         }}
-                    >Все</li>
+                    >Все
+                    </li>
                     {filmTypeConst.map((item, idx) => {
                         return (
                             <li key={idx} onClick={() => setFilmType(item.type)}>{item.text}</li>
@@ -97,7 +148,7 @@ function FilmsList() {
                     })}
                 </ul>
                 <div className={'filtres'}>
-                    <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="filled" sx={{m: 1, minWidth: 120 }}>
                         <InputLabel id="FilmGenres">Жанр</InputLabel>
                         <Select
                             labelId="FilmGenres"
@@ -213,9 +264,19 @@ function FilmsList() {
                                 </div>
                             )
                         })}
+                        <div className={'loadMore'}>
+                            <input
+                                className={'FilterSearchBtn'}
+                                type="button" value={'Загрузить еще'}
+                                onClick={() => {
+                                    setFilmListPage(filmListPage + 1)
+                                }}
+                            />
+                        </div>
                     </div>
                 }
             </div>
+            {filmsList.length === 0 && <h2 className={'errorFilmList'}>Фильмы не найдены</h2>}
         </section>
     );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { axiosInstanceKinopoisk } from "../../APIS/api/api";
 import './DetailInfoFilm.css'
+import { CircularProgress } from "@mui/material";
 
 function DetailInfoFilm() {
     const { id } = useParams();
@@ -10,52 +11,55 @@ function DetailInfoFilm() {
     const [filmInfo, setFilmInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const test = [{name: 'sssr'}, {name: 'sssr'}, {name: 'sssr'}, {name: 'sssr'}, {name: 'sssr'}, {name: 'sssr'}, {name: 'sssr'},]
-
     async function getFilmInfo(api_key) {
         try {
-            const response = await axiosInstanceKinopoisk.get(`/movie/${id}?token=${'SH03P8B-PTZ4NQ1-QZD1TFX-G7965BT'}`);
+            const response = await axiosInstanceKinopoisk.get(`movie/${id}?token=${api_key}`);
             setFilmInfo(response.data);
             console.log(response.data);
+            setIsLoading(false);
         } catch (e) {
             console.log(e);
             if (e.request.status === 403) {
-                switchApiKey();
+                getNewKey();
             }
-        } finally {
-            setIsLoading(false)
         }
     }
 
-    function switchApiKey() {
+    function getNewKey() {
         setWhatApiKey(prevKey => (prevKey + 1) % api_keys.length);
     }
 
     useEffect(() => {
-        getFilmInfo(api_keys[whatApiKey]);
-    }, []);
+        const fetchData = async () => {
+            await getFilmInfo(api_keys[whatApiKey]);
+        };
 
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
+        fetchData();
+    }, [whatApiKey]);
 
     return (
-        <section className={'DetailInfoSection'}>
-                <img src={filmInfo?.poster.previewUrl} alt=""/>
-                <div className={'InfoFilm-DetailInfo'}>
-                    <h1>{filmInfo?.name}</h1>
-                    <div className={'FilmGenres-detailInfo'}>
-                        {filmInfo?.genres.map((item, idx) => {
-                            return (<div>{item.name}</div>)
-                        })}
+        <section>
+            {isLoading ?
+                <div><CircularProgress /></div>
+                :
+                <div className={'DetailInfoSection'}>
+                    <img src={filmInfo.poster.previewUrl} alt="" />
+                    <div className={'InfoFilm-DetailInfo'}>
+                        <h1>{filmInfo?.name}</h1>
+                        <div className={'FilmGenres-detailInfo'}>
+                            {filmInfo?.genres.map((item, idx) => {
+                                return (<div key={idx}>{item.name}</div>)
+                            })}
+                        </div>
+                        <div className={'FilmCountry-detailInfo'}>
+                            {filmInfo.countries.map((item, idx) => {
+                                return (<span key={idx}>{item.name}</span>)
+                            })}
+                        </div>
+                        <p>{filmInfo?.description}</p>
                     </div>
-                    <div className={'FilmCountry-detailInfo'}>
-                        {filmInfo.countries.map((item, idx) => {
-                            return (<span>{item.name}</span>)
-                        })}
-                    </div>
-                    <p>{filmInfo?.description}</p>
                 </div>
+            }
         </section>
     );
 }

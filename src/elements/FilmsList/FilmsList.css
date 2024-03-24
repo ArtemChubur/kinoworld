@@ -82,7 +82,7 @@
     cursor: pointer;
 }
 
-.MuiSvgIcon-root{
+.filtresDiv .MuiSvgIcon-root{
     color: #FFC107 !important;
 }
 
@@ -158,4 +158,51 @@ FilterSearchBtn:active{
 .LoadingFilmList{
     text-align: center;
     margin-top: 15%;
+}
+
+.SearchInp {
+    width: 500px;
+    height: 50px;
+    border-radius: 15px;
+    position: relative;
+    border: 1px solid var(--yel);
+    background: black;
+    color: var(--yel);
+    outline: 1px solid var(--yel);
+}
+
+.SearchBtn{
+    border-radius: 100px;
+    height: 45px;
+    width: 45px;
+    cursor: pointer;
+    position: absolute;
+    margin: 3px -3.8%;
+    background: black;
+    color: var(--yel);
+    border: 1px solid var(--yel);
+    /*outline: var(--yel);*/
+}
+
+.SearchBtn:hover{
+    color: black !important;
+    background: var(--yel);
+}
+
+.SearchInp::placeholder{
+    color: var(--yel);
+}
+
+.search{
+    text-align: center;
+    margin: 10px;
+}
+
+.errorFilmList{
+    text-align: center;
+}
+
+.loadMore{
+    width: 300%;
+    text-align: center;
 }
