@@ -1,0 +1,17 @@
+.HeaderLogo{
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 100px;
+    margin: 20px;
+}
+
+header{
+    background: var(--yel);
+    display: flex;
+    justify-content: space-between;
+}
+
+header h1{
+    color: black;
+    margin: 3% 0 0 -10%;
+}

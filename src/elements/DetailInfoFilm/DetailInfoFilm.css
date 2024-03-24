@@ -1,0 +1,40 @@
+.DetailInfoSection{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.DetailInfoSection img{
+    width: 350px;
+    height: 500px;
+    border: 5px solid var(--yel);
+    border-radius: 10px;
+}
+
+.DetailInfoSection h1 {
+    font-size: 50px;
+    margin: 0 0 20px 0;
+}
+
+.InfoFilm-DetailInfo p{
+    width: 800px;
+    font-size: 20px;
+}
+
+.FilmGenres-detailInfo {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.FilmGenres-detailInfo{
+    display: flex;
+    gap: 20px;
+    font-weight: 500;
+}
+
+.FilmCountry-detailInfo{
+    display: flex;
+    gap: 20px;
+    font-weight: 500;
+}

@@ -29,18 +29,16 @@ function Player() {
         getFilm()
     }, []);
 
-
-    useEffect(() => {
-        console.log(playerNum)
-    }, [playerNum]);
     return (
         <div className="">
             <div className={'player'}>
                 {isLoader ?
-                    <CircularProgress />
+                    <div className={'LoadPlayer'}>
+                        <CircularProgress />
+                    </div>
                     :
                     <div>
-                        <div>
+                        <div className={'WhatPlayerBtns'}>
                             <ul className={'playersNums'}>
                                 {film.map((item ,idx) => {
                                     return(
@@ -66,7 +64,9 @@ function Player() {
                         })}
                     </div>
                 }
+                {film.length === 0 && <p className={'PlayerError'}>Не удалось найти плеер</p>}
             </div>
+
         </div>
     );
 }

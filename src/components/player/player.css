@@ -1,52 +1,64 @@
 .player{
-    /*border: 1px solid black;*/
     border-radius: 20px;
     background: var(--yel);
-    max-width: 70%;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
+    /*max-width: 70%;*/
+    width: 149vh;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*margin: 0;*/
+    /*padding: 0;*/
 }
 
 .hidePlayer{
     display: none;
 }
 
-.visiblePlayer{
-
+.WhatPlayerBtns{
+    padding-top: 1px;
+    margin: 0 -3%;
 }
 
 .playersNums{
     display: flex;
     gap: 20px;
-    margin: 10px -2%;
-    /*margin: auto 0 auto 0;*/
-    /*justify-content: left;*/
-    /*float: right;*/
-}
 
-.whatPlayer{
-    /*display: flex;*/
-    cursor: pointer;
-    list-style: none;
 }
 
 .whatPlayerButton{
     color: var(--yel);
+    background: black;
+    border-radius: 10px;
     cursor: pointer;
     width: 150px;
     height: 30px;
-    background: black;
-    outline: none;
     border: 1px solid #b98c00;
-    margin: -10% 0;
-    border-radius: 10px;
+    margin: 0 0;
+}
+
+.whatPlayer{
+    list-style: none;
 }
 
 .PlayerVideo{
     width: 145vh;
+    /*height: 450px;*/
     height: 75vh;
     border-radius: 20px;
     margin: 0 10px 10px 10px;
+}
+
+.PlayerError{
+    color: black;
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.css-18lrjg1-MuiCircularProgress-root{
+    color: var(--yel) !important;
+}
+
+.LoadPlayer{
+    text-align: center;
+    padding: 50px 0;
 }

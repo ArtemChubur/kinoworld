@@ -4,59 +4,80 @@ import {useNavigate} from "react-router-dom";
 import {axiosInstanceKinopoisk} from "../../APIS/api/api";
 import {filmTypeConst} from "../../constants/FilmType";
 import {FilmGenresConst} from "../../constants/FilmGenres";
-import {Box, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {FilmCityConst} from "../../constants/FilmCity";
+import {filmYearConst} from "../../constants/FilmYear";
+
 
 function FilmsList() {
-    // const api_key = 'SD3MWNV-82PMJEM-PD7NGSV-F0V9YFX'
-    const api_key = 'XPXMBKB-6Z740AK-JNF897G-BVXZKBM'
+    const api_keys = ['SD3MWNV-82PMJEM-PD7NGSV-F0V9YFX', 'XPXMBKB-6Z740AK-JNF897G-BVXZKBM', 'R89TYM0-4GAMXYJ-HBRVH4F-3XHY5B4', 'SH03P8B-PTZ4NQ1-QZD1TFX-G7965BT', 'Q76DWP0-CM5MXAJ-P2JZSR5-KY2H9AY']
     const [filmsList, setFilmsList] = useState([]);
-    const [isLoader, setIsLoader] = useState(false);
+    const [isLoader, setIsLoader] = useState(true);
     const [filmType, setFilmType] = useState('')
-    const [genres, setGenres] = useState('')
     const navigate = useNavigate()
+    const [filtres, setFiltres] = useState({})
+    const [whatApiKey, setWhatApiKey] = useState(0);
+    const [searchValue, setSearchValue] = useState('')
 
-    async function getFilmsList() {
+    async function getFilmsList(api_key) {
         setIsLoader(true)
         try {
             const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30&token=${api_key}&type=${filmType}`)
             setFilmsList(response.data.docs)
-            console.log(response.data)
         } catch (e) {
             console.log(e)
+            if (e.request.status === 403){
+                switchApiKey();
+            }
         } finally {
             setIsLoader(false)
         }
     }
 
-    async function getFilmFilter(value){
+    async function getFilmFilter(apiKey){
+        const filtresArray = Object.values(filtres)
+        let filtresElements = ''
+        filtresArray.map((item) => {filtresElements = filtresElements + item})
         try {
-            const response = await axiosInstanceKinopoisk.get(`/movie?page=1&limit=30&genres.name=${value}&token=${api_key}&type=${filmType}`)
+            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
             setFilmsList(response.data.docs)
-            console.log(response.data.docs)
+        } catch (e){
+            console.log(e)
+            if (e.request.status === 403){
+                switchApiKey();
+            }
+        } finally {
+            setIsLoader(false)
+        }
+    }
+
+    async function FilmSearch() {
+        try {
+            const response = await axiosInstanceKinopoisk(`movie/search?page=1&limit=100&query=${searchValue}`)
         } catch (e){
             console.log(e)
         }
     }
 
+    function switchApiKey() {
+        setWhatApiKey(prevKey => (prevKey + 1) % api_keys.length);
+    }
+
     useEffect(() => {
-        console.log(genres)
-        if (genres !== ''){
-            getFilmFilter(`${genres}`)
+        if (filtres.country !== '' && filtres.genres !== '' && filtres.year !== '') {
+            getFilmFilter(api_keys[whatApiKey]);
         } else {
-            getFilmsList()
+            getFilmsList(api_keys[whatApiKey]);
         }
-    }, [genres]);
+    }, [filmType, filtres, whatApiKey]);
 
-    useEffect(() => {
-        getFilmsList()
-    }, []);
 
-    useEffect(() => {
-        getFilmsList()
-    }, [filmType])
 
     return (
-        <div className={'FilmsListElement'}>
+        <section className={'FilmsListElement'}>
+            <input
+                type="text"
+            />
             <div>
                 <ul className={'FilmTypeList'}>
                     <li
@@ -70,50 +91,102 @@ function FilmsList() {
                         )
                     })}
                 </ul>
-                <Box>
+                <div className={'filtres'}>
                     <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="demo-simple-select-filled-label">Жанр</InputLabel>
+                        <InputLabel id="FilmGenres">Жанр</InputLabel>
                         <Select
-                            labelId="demo-simple-select-filled-label"
+                            labelId="FilmGenres"
                             id="demo-simple-select-filled"
-                            value={genres}
-                            onChange={(e) => {setGenres(e.target.value)}}
+                            value={filtres.genres}
+                            onChange={(e) => {
+                                if (e.target.value !== ''){
+                                    setFiltres(prevState => ({...prevState, genres: `&genres.name=${e.target.value}`}))
+                                }
+                                if (filtres.genres !== '' && e.target.value === ''){
+                                    // filtres.delete(genres)
+                                    delete filtres.genres
+                                }
+                            }}
                         >
                             <MenuItem value="">
                                 Все
                             </MenuItem>
                             {FilmGenresConst.map((item, idx) => {
                                 return(
-                                    <MenuItem value={item}>{item}</MenuItem>
+                                    <MenuItem key={idx} value={item}>{item}</MenuItem>
                                 )
                             })}
                         </Select>
                     </FormControl>
-                </Box>
-                {/*<div>*/}
-                {/*    <button onClick={toggleDrawer('right', true)} className={'OpenMenuBtn'}>*/}
-                {/*        <MenuIcon*/}
-                {/*            fontSize={'large'}*/}
-                {/*        />*/}
-                {/*    </button>*/}
-                {/*    <Drawer*/}
-                {/*        anchor={'right'}*/}
-                {/*        open={open['right']}*/}
-                {/*        onClose={toggleDrawer('right', false)}*/}
-                {/*    >*/}
-                {/*        {list('right')}*/}
-                {/*    </Drawer>*/}
-                {/*</div>*/}
+                    <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="FilmCity">Страна</InputLabel>
+                        <Select
+                            labelId="FilmCity"
+                            id="demo-simple-select-filled"
+                            value={filtres.city}
+                            onChange={(e) => {
+                                if (e.target.value !== ''){
+                                    setFiltres(prevState => ({...prevState, country: `&countries.name=${e.target.value}`}))
+                                }
+                                if (filtres.country !== '' && e.target.value === ''){
+                                    // filtres.delete(Country)
+                                    delete filtres.country
+                                }
+                            }}
+                        >
+                            <MenuItem value="">
+                                Все
+                            </MenuItem>
+                            {FilmCityConst.map((item, idx) => {
+                                return(
+                                    <MenuItem key={idx} value={item}>{item}</MenuItem>
+                                )
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="FilmYear">Год</InputLabel>
+                        <Select
+                            labelId="FilmYear"
+                            id="demo-simple-select-filled"
+                            value={filtres.year}
+                            onChange={(e) => {
+                                if (e.target.value !== ''){
+                                    setFiltres(prevState => ({...prevState, year: `&year=${e.target.value}`}))
+                                }
+                                if (filtres.year !== '' && e.target.value === ''){
+                                    delete filtres.year
+                                }
+                            }}
+                        >
+                            <MenuItem value="">
+                                Все
+                            </MenuItem>
+                            {filmYearConst.map((item, idx) => {
+                                return(
+                                    <MenuItem key={idx} value={item}>{item}</MenuItem>
+                                )
+                            })}
+                        </Select>
+                    </FormControl>
+                    <input
+                        className={'FilterSearchBtn'}
+                        type="button"
+                        onClick={() => {getFilmFilter(api_keys[whatApiKey])}}
+                        value={'Показать'}
+                    />
+                </div>
             </div>
             <div>
                 {isLoader ?
-                    <p>Load...</p>
+                    <div className={'LoadingFilmList'}>
+                        <CircularProgress />
+                    </div>
                     :
                     <div className={'FilmsList'}>
                         {filmsList.map((item, idx) => {
                             return (
-                                // <iframe key={idx} allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" src={item.iframeUrl} />
-                                <div
+                               <div
                                     key={idx}
                                     onClick={() => {
                                         navigate(`/${item.id}`)
@@ -138,7 +211,7 @@ function FilmsList() {
                     </div>
                 }
             </div>
-        </div>
+        </section>
     );
 }
 

@@ -88,6 +88,7 @@
 
 .css-d9oaum-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input.MuiSelect-select{
     border: 1px solid var(--yel);
+    border-radius: 5px !important;
     color: var(--yel);
 }
 
@@ -115,6 +116,7 @@
 .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{
     background: black !important;
     border: 1px solid var(--yel);
+    border-radius: 5px !important;
     color: var(--yel) !important;
 }
 
@@ -124,4 +126,36 @@
 
 .css-e4w4as-MuiFormLabel-root-MuiInputLabel-root{
     color: var(--yel) !important;
+}
+
+.FilterSearchBtn{
+    background: black;
+    outline: none;
+    border: 1px solid var(--yel);
+    color: var(--yel);
+    font-size: 24px;
+    border-radius: 5px;
+    margin: 7px 0;
+    width: 180px;
+    height: 60px;
+    cursor: pointer;
+}
+
+.FilterSearchBtn:hover{
+    background: var(--yel);
+    color: black;
+}
+
+FilterSearchBtn:active{
+    background: black;
+    /*color: var(--yel);*/
+}
+
+.filtres{
+    margin: 0 30px;
+}
+
+.LoadingFilmList{
+    text-align: center;
+    margin-top: 15%;
 }
