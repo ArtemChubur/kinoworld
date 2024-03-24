@@ -51,7 +51,7 @@ function FilmsList() {
         }
     }
 
-    async function FilmSearch() {
+    async function FilmSearchName() {
         try {
             const response = await axiosInstanceKinopoisk(`movie/search?page=1&limit=100&query=${searchValue}`)
         } catch (e){
@@ -75,9 +75,14 @@ function FilmsList() {
 
     return (
         <section className={'FilmsListElement'}>
-            <input
-                type="text"
-            />
+            <form onSubmit={FilmSearchName}>
+                <input
+                    type="text"
+                    onChange={(e) => {
+                        setSearchValue(e.target.value)
+                    }}
+                />
+            </form>
             <div>
                 <ul className={'FilmTypeList'}>
                     <li
