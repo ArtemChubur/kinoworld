@@ -236,6 +236,26 @@ FilterSearchBtn:active{
     background: black;
 }
 
+.css-1km1ehz{
+    border: 1px solid var(--yel) !important;
+}
+
+{
+    color: var(--yel) !important;
+}
+
+.css-b1884d{
+    border: 1px solid var(--yel) !important;
+}
+
+.css-13q0g9a::after{
+    border-bottom: 1px solid yellow !important;
+}
+
+.css-1rgmeur, .css-1rgmeur.Mui-focused, .css-17gq4vl.css-17gq4vl.css-17gq4vl, .css-14x1nlk, .css-14x1nl{
+    color: var(--yel) !important;
+}
+
 @media (max-width: 517px) {
     .SearchInp{
         max-width: 45%;
