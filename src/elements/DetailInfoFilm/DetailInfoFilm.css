@@ -38,3 +38,33 @@
     gap: 20px;
     font-weight: 500;
 }
+
+@media (max-width: 517px) {
+    .DetailInfoSection{
+        display: block;
+    }
+    .DetailInfoSection img{
+        margin: -20px;
+        width: 112%;
+        height: 400%;
+        border: none;
+        border-radius: 0;
+    }
+
+    .DetailInfoSection h1{
+        display: none;
+    }
+
+    .InfoFilm-DetailInfo p{
+        margin-left: -4%;
+        width: 107%;
+    }
+
+    .FilmGenres-detailInfo{
+        display: none;
+    }
+
+    .FilmCountry-detailInfo{
+        display: none;
+    }
+}

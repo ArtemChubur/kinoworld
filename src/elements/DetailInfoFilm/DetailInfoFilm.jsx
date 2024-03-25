@@ -29,11 +29,11 @@ function DetailInfoFilm() {
         setWhatApiKey(prevKey => (prevKey + 1) % api_keys.length);
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await getFilmInfo(api_keys[whatApiKey]);
-        };
+    const fetchData = async () => {
+        await getFilmInfo(api_keys[whatApiKey]);
+    };
 
+    useEffect(() => {
         fetchData();
     }, [whatApiKey]);
 

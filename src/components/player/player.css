@@ -1,12 +1,7 @@
 .player{
     border-radius: 20px;
     background: var(--yel);
-    /*max-width: 70%;*/
     width: 149vh;
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*margin: 0;*/
-    /*padding: 0;*/
 }
 
 .hidePlayer{
@@ -61,4 +56,26 @@
 .LoadPlayer{
     text-align: center;
     padding: 50px 0;
+}
+
+@media (max-width: 517px) {
+    .player {
+        width: 90%;
+        height: 300px;
+        margin: -10%;
+    }
+
+    .PlayerVideo{
+        width: 93%;
+        height: 20vh;
+        padding: 0 0;
+        /*height: 0%;*/
+        /*height: 225px;*/
+    }
+
+    .playersNums{
+        display: grid;
+        gap: 5px;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
 }
