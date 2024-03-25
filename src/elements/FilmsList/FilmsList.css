@@ -53,6 +53,7 @@
     border: 5px solid var(--yel);
     border-radius: 20px;
     margin: 20px auto;
+    cursor: pointer;
 }
 
 .genres{
@@ -203,6 +204,25 @@ FilterSearchBtn:active{
 }
 
 .loadMore{
-    width: 300%;
+    /*width: 300%;*/
     text-align: center;
+    /*margin-left: -500px;*/
+}
+
+.LoadMoreBtn{
+    border: 1px solid var(--yel);
+    color: var(--yel);
+    background: black;
+    width: 400px;
+    height: 50px;
+    font-size: 24px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+}
+
+.LoadMoreBtn:hover{
+    color: black;
+    background: var(--yel);
 }

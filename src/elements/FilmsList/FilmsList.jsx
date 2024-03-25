@@ -20,6 +20,7 @@ function FilmsList() {
     const [whatApiKey, setWhatApiKey] = useState(0);
     const [searchValue, setSearchValue] = useState('')
     const [filmListPage, setFilmListPage] = useState(1)
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     async function getFilmsList(api_key) {
         setIsLoader(true)
@@ -95,6 +96,15 @@ function FilmsList() {
         setWhatApiKey(prevKey => (prevKey + 1) % api_keys.length);
     }
 
+    const saveScrollPosition = () => {
+        setScrollPosition(window.scrollY);
+    };
+
+    // Восстановление позиции прокрутки после загрузки данных
+    const restoreScrollPosition = () => {
+        window.scrollTo(0, scrollPosition);
+    };
+
     useEffect(() => {
         if (filtres.country !== '' && filtres.genres !== '' && filtres.year !== '') {
             getFilmFilter(api_keys[whatApiKey]);
@@ -104,10 +114,13 @@ function FilmsList() {
     }, [filmType, filtres, whatApiKey]);
 
     useEffect(() => {
+        saveScrollPosition();
         getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
     }, [filmListPage]);
 
-
+    useEffect(() => {
+        restoreScrollPosition();
+    }, [filmsList]);
 
     return (
         <section className={'FilmsListElement'}>
@@ -148,17 +161,17 @@ function FilmsList() {
                     })}
                 </ul>
                 <div className={'filtres'}>
-                    <FormControl variant="filled" sx={{m: 1, minWidth: 120 }}>
+                    <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
                         <InputLabel id="FilmGenres">Жанр</InputLabel>
                         <Select
                             labelId="FilmGenres"
                             id="demo-simple-select-filled"
                             value={filtres.genres}
                             onChange={(e) => {
-                                if (e.target.value !== ''){
+                                if (e.target.value !== '') {
                                     setFiltres(prevState => ({...prevState, genres: `&genres.name=${e.target.value}`}))
                                 }
-                                if (filtres.genres !== '' && e.target.value === ''){
+                                if (filtres.genres !== '' && e.target.value === '') {
                                     // filtres.delete(genres)
                                     delete filtres.genres
                                 }
@@ -168,23 +181,26 @@ function FilmsList() {
                                 Все
                             </MenuItem>
                             {FilmGenresConst.map((item, idx) => {
-                                return(
+                                return (
                                     <MenuItem key={idx} value={item}>{item}</MenuItem>
                                 )
                             })}
                         </Select>
                     </FormControl>
-                    <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
                         <InputLabel id="FilmCity">Страна</InputLabel>
                         <Select
                             labelId="FilmCity"
                             id="demo-simple-select-filled"
                             value={filtres.city}
                             onChange={(e) => {
-                                if (e.target.value !== ''){
-                                    setFiltres(prevState => ({...prevState, country: `&countries.name=${e.target.value}`}))
+                                if (e.target.value !== '') {
+                                    setFiltres(prevState => ({
+                                        ...prevState,
+                                        country: `&countries.name=${e.target.value}`
+                                    }))
                                 }
-                                if (filtres.country !== '' && e.target.value === ''){
+                                if (filtres.country !== '' && e.target.value === '') {
                                     // filtres.delete(Country)
                                     delete filtres.country
                                 }
@@ -194,23 +210,23 @@ function FilmsList() {
                                 Все
                             </MenuItem>
                             {FilmCityConst.map((item, idx) => {
-                                return(
+                                return (
                                     <MenuItem key={idx} value={item}>{item}</MenuItem>
                                 )
                             })}
                         </Select>
                     </FormControl>
-                    <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
                         <InputLabel id="FilmYear">Год</InputLabel>
                         <Select
                             labelId="FilmYear"
                             id="demo-simple-select-filled"
                             value={filtres.year}
                             onChange={(e) => {
-                                if (e.target.value !== ''){
+                                if (e.target.value !== '') {
                                     setFiltres(prevState => ({...prevState, year: `&year=${e.target.value}`}))
                                 }
-                                if (filtres.year !== '' && e.target.value === ''){
+                                if (filtres.year !== '' && e.target.value === '') {
                                     delete filtres.year
                                 }
                             }}
@@ -219,7 +235,7 @@ function FilmsList() {
                                 Все
                             </MenuItem>
                             {filmYearConst.map((item, idx) => {
-                                return(
+                                return (
                                     <MenuItem key={idx} value={item}>{item}</MenuItem>
                                 )
                             })}
@@ -228,7 +244,9 @@ function FilmsList() {
                     <input
                         className={'FilterSearchBtn'}
                         type="button"
-                        onClick={() => {getFilmFilter(api_keys[whatApiKey])}}
+                        onClick={() => {
+                            getFilmFilter(api_keys[whatApiKey])
+                        }}
                         value={'Показать'}
                     />
                 </div>
@@ -236,13 +254,14 @@ function FilmsList() {
             <div>
                 {isLoader ?
                     <div className={'LoadingFilmList'}>
-                        <CircularProgress />
+                        <CircularProgress/>
                     </div>
                     :
                     <div className={'FilmsList'}>
                         {filmsList.map((item, idx) => {
                             return (
-                               <div
+                                <div
+                                    id={`filmCard${idx+1}`}
                                     key={idx}
                                     onClick={() => {
                                         navigate(`/${item.id}`)
@@ -264,19 +283,21 @@ function FilmsList() {
                                 </div>
                             )
                         })}
-                        <div className={'loadMore'}>
-                            <input
-                                className={'FilterSearchBtn'}
-                                type="button" value={'Загрузить еще'}
-                                onClick={() => {
-                                    setFilmListPage(filmListPage + 1)
-                                }}
-                            />
-                        </div>
                     </div>
                 }
             </div>
-            {filmsList.length === 0 && <h2 className={'errorFilmList'}>Фильмы не найдены</h2>}
+            {filmsList.length === 0 ||
+                <div className={'loadMore'}>
+                    <input
+                        className={'LoadMoreBtn'}
+                        type="button" value={'Загрузить еще'}
+                        onClick={() => {
+                            setFilmListPage(filmListPage + 1)
+                        }}
+                    />
+                </div>
+            }
+            {isLoader || filmsList.length === 0 && <h2 className={'errorFilmList'}>Фильмы не найдены</h2>}
         </section>
     );
 }
