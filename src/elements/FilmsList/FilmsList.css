@@ -226,3 +226,127 @@ FilterSearchBtn:active{
     color: black;
     background: var(--yel);
 }
+
+.BurgerMenuBtn{
+    display: none;
+}
+
+@media (max-width: 517px) {
+    .SearchInp{
+        max-width: 45%;
+        margin-left: -60%;
+    }
+
+    .SearchBtn{
+        top: 140px;
+        margin-left: -50px;
+        /*margin-left: 200px;*/
+    }
+
+    .filtresDiv{
+        display: none;
+    }
+
+    .BurgerMenuBtn{
+        /*display: flex;*/
+        display: block;
+        margin-left: -65%;
+        color: var(--yel);
+        font-size: 50px;
+        background: none;
+        border: none;
+        outline: none;
+    }
+
+    .search{
+        display: flex;
+        margin-left: 6%;
+    }
+
+    .FilmList-film{
+        margin-left: 2%;
+    }
+
+    .LoadMoreBtn{
+        max-width: 60%;
+    }
+
+    .SideBar{
+        background: var(--yel);
+        border: 1px solid black;
+        width: 200px;
+        height: 100%;
+        position: fixed;
+    }
+
+    .line{
+        width: 100%;
+        height: 1px;
+        background: black;
+    }
+
+    .SearchInp::placeholder {
+        font-size: 20px;
+    }
+
+    .SideBar div p{
+        font-size: 24px;
+        margin-left: 20px;
+        font-weight: 500;
+    }
+
+    .FilterSearchBtn{
+        width: 150px;
+        /*margin: 0 auto;*/
+        margin-left: -5px;
+    }
+
+
+
+    .filtresDiv .MuiSvgIcon-root{
+        color: black !important;
+    }
+
+    .css-d9oaum-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input.MuiSelect-select{
+        border: 1px solid black;
+        border-radius: 5px !important;
+        color: black;
+    }
+
+    .css-e4w4as-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+        color: var(--yel) !important;
+        /*background: #FFC107;*/
+    }
+
+    .css-o943dk-MuiFormLabel-root-MuiInputLabel-root{
+        /*color: black !important;*/
+    }
+
+    .css-o943dk-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+        color: black !important;
+    }
+
+    .css-utk17j-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root.Mui-focused{
+
+    }
+
+    .css-utk17j-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root::after{
+        border-bottom: 1px solid darkgray !important;
+    }
+
+    .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{
+        background: black !important;
+        border: 1px solid var(--yel);
+        border-radius: 5px !important;
+        color: var(--yel) !important;
+    }
+
+    .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper ul li{
+        border-bottom: 1px solid darkgray !important;
+    }
+
+    .css-e4w4as-MuiFormLabel-root-MuiInputLabel-root{
+        color: black !important;
+    }
+
+}

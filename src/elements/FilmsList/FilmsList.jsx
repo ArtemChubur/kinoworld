@@ -4,10 +4,23 @@ import {useNavigate} from "react-router-dom";
 import {axiosInstanceKinopoisk} from "../../APIS/api/api";
 import {filmTypeConst} from "../../constants/FilmType";
 import {FilmGenresConst} from "../../constants/FilmGenres";
-import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import {FilmCityConst} from "../../constants/FilmCity";
 import {filmYearConst} from "../../constants/FilmYear";
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+
 
 
 function FilmsList() {
@@ -22,21 +35,6 @@ function FilmsList() {
     const [filmListPage, setFilmListPage] = useState(1)
     const [scrollPosition, setScrollPosition] = useState(0);
 
-    async function getFilmsList(api_key) {
-        setIsLoader(true)
-        try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30&token=${api_key}&type=${filmType}`)
-            setFilmsList(response.data.docs)
-        } catch (e) {
-            console.log(e)
-            if (e.request.status === 403){
-                switchApiKey();
-            }
-        } finally {
-            setSearchValue('')
-            setIsLoader(false)
-        }
-    }
     async function getFilmsListNextPage(api_key, page) {
         const filtresArray = Object.values(filtres)
         let filtresElements = ''
@@ -60,7 +58,7 @@ function FilmsList() {
         }
     }
 
-    async function getFilmFilter(apiKey){
+    async function getFilmList(apiKey){
         const filtresArray = Object.values(filtres)
         let filtresElements = ''
         filtresArray.map((item) => {filtresElements = filtresElements + item})
@@ -105,12 +103,13 @@ function FilmsList() {
         window.scrollTo(0, scrollPosition);
     };
 
+    const [open, setOpen] = React.useState(false);
+    const toggleDrawer = (newOpen) => () => {
+        setOpen(newOpen);
+    };
+
     useEffect(() => {
-        if (filtres.country !== '' && filtres.genres !== '' && filtres.year !== '') {
-            getFilmFilter(api_keys[whatApiKey]);
-        } else {
-            getFilmsList(api_keys[whatApiKey]);
-        }
+        getFilmList(api_keys[whatApiKey]);
     }, [filmType, filtres, whatApiKey]);
 
     useEffect(() => {
@@ -125,26 +124,144 @@ function FilmsList() {
     return (
         <section className={'FilmsListElement'}>
             <div className={'search'}>
-                <label>
-                    <input
-                        value={searchValue}
-                        className={'SearchInp'}
-                        type="text"
-                        onChange={(e) => {
-                            setSearchValue(e.target.value)
-                        }}
-                        placeholder={'Введите название'}
+                <form onSubmit={FilmSearchName}>
+                    <label>
+                        <input
+                            value={searchValue}
+                            className={'SearchInp'}
+                            type="text"
+                            onChange={(e) => {
+                                setSearchValue(e.target.value)
+                            }}
+                            placeholder={'Введите название'}
+                        />
+                        <button
+                            type="button"
+                            className={'SearchBtn'}
+                            onClick={() => {
+                                FilmSearchName(api_keys[whatApiKey])
+                            }}
+                        >
+                            <SavedSearchIcon/>
+                        </button>
+                    </label>
+                </form>
+                <button
+                    onClick={toggleDrawer(true)}
+                    className={'BurgerMenuBtn'}
+                >
+                    <MenuIcon
+                        fontSize={'large'}
                     />
-                    <button
-                        type="button"
-                        className={'SearchBtn'}
-                        onClick={() => {
-                            FilmSearchName(api_keys[whatApiKey])
-                        }}
-                    >
-                        <SavedSearchIcon/>
-                    </button>
-                </label>
+                </button>
+                <Drawer open={open} onClose={toggleDrawer(false)}>
+                    <div className={'SideBar'}>
+                        <div>
+                            <p onClick={() => setFilmType('')}>Всe</p>
+                            {filmTypeConst.map((item, idx) => {
+                                return (
+                                    <p onClick={() => setFilmType(item.type)} key={idx}>{item.text}</p>
+                                )
+                            })}
+                            <div className={'line'}></div>
+                        </div>
+                        <div className={'filtres'}>
+                            <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="FilmGenres">Жанр</InputLabel>
+                                <Select
+                                    labelId="FilmGenres"
+                                    id="demo-simple-select-filled"
+                                    value={filtres.genres}
+                                    onChange={(e) => {
+                                        if (e.target.value !== '') {
+                                            setFiltres(prevState => ({
+                                                ...prevState,
+                                                genres: `&genres.name=${e.target.value}`
+                                            }))
+                                        }
+                                        if (filtres.genres !== '' && e.target.value === '') {
+                                            // filtres.delete(genres)
+                                            delete filtres.genres
+                                        }
+                                    }}
+                                >
+                                    <MenuItem value="">
+                                        Все
+                                    </MenuItem>
+                                    {FilmGenresConst.map((item, idx) => {
+                                        return (
+                                            <MenuItem key={idx} value={item}>{item}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="FilmCity">Страна</InputLabel>
+                                <Select
+                                    labelId="FilmCity"
+                                    id="demo-simple-select-filled"
+                                    value={filtres.city}
+                                    onChange={(e) => {
+                                        if (e.target.value !== '') {
+                                            setFiltres(prevState => ({
+                                                ...prevState,
+                                                country: `&countries.name=${e.target.value}`
+                                            }))
+                                        }
+                                        if (filtres.country !== '' && e.target.value === '') {
+                                            // filtres.delete(Country)
+                                            delete filtres.country
+                                        }
+                                    }}
+                                >
+                                    <MenuItem value="">
+                                        Все
+                                    </MenuItem>
+                                    {FilmCityConst.map((item, idx) => {
+                                        return (
+                                            <MenuItem key={idx} value={item}>{item}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="filled" sx={{m: 1, minWidth: 120}}>
+                                <InputLabel id="FilmYear">Год</InputLabel>
+                                <Select
+                                    labelId="FilmYear"
+                                    id="demo-simple-select-filled"
+                                    value={filtres.year}
+                                    onChange={(e) => {
+                                        if (e.target.value !== '') {
+                                            setFiltres(prevState => ({...prevState, year: `&year=${e.target.value}`}))
+                                        }
+                                        if (filtres.year !== '' && e.target.value === '') {
+                                            delete filtres.year
+                                        }
+                                    }}
+                                >
+                                    <MenuItem value="">
+                                        Все
+                                    </MenuItem>
+                                    {filmYearConst.map((item, idx) => {
+                                        return (
+                                            <MenuItem key={idx} value={item}>{item}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <input
+                                className={'FilterSearchBtn'}
+                                type="button"
+                                onClick={() => {
+                                    // getFilmList(api_keys[whatApiKey])
+                                    setOpen(false)
+                                }}
+                                value={'Показать'}
+                            />
+                        </div>
+
+                    </div>
+                </Drawer>
             </div>
             <div className={'filtresDiv'}>
                 <ul className={'FilmTypeList'}>
@@ -245,7 +362,7 @@ function FilmsList() {
                         className={'FilterSearchBtn'}
                         type="button"
                         onClick={() => {
-                            getFilmFilter(api_keys[whatApiKey])
+                            getFilmList(api_keys[whatApiKey])
                         }}
                         value={'Показать'}
                     />
