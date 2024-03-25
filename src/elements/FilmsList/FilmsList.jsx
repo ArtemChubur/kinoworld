@@ -8,17 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {FilmCityConst} from "../../constants/FilmCity";
 import {filmYearConst} from "../../constants/FilmYear";
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
-import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 
 
@@ -33,7 +23,7 @@ function FilmsList() {
     const [whatApiKey, setWhatApiKey] = useState(0);
     const [searchValue, setSearchValue] = useState('')
     const [filmListPage, setFilmListPage] = useState(1)
-    const [scrollPosition, setScrollPosition] = useState(0);
+    const [open, setOpen] = React.useState(false);
 
     async function getFilmsListNextPage(api_key, page) {
         const filtresArray = Object.values(filtres)
@@ -43,10 +33,9 @@ function FilmsList() {
         try {
             const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=30${filtresElements}&token=${api_key}&type=${filmType}`)
             // setFilmsList(response.data.docs)
-            const addFilms = response.data.docs.map((item, idx) => {
+            const addFilms = response.data.docs.map((item) => {
                 filmsList.push(item)
             })
-            console.log(filmsList)
         } catch (e) {
             console.log(e)
             if (e.request.status === 403){
@@ -77,33 +66,24 @@ function FilmsList() {
     }
 
     async function FilmSearchName(apiKey) {
-        setIsLoader(true)
+        setIsLoader(true);
         try {
-            const response = await axiosInstanceKinopoisk(`movie/search?page=1&limit=30&token=${apiKey}&query=${searchValue}`)
-            console.log(response)
-            setFilmsList(response.data.docs)
-        } catch (e){
-            console.log(e)
+            const response = await axiosInstanceKinopoisk.get(`movie/search?page=1&limit=30&token=${apiKey}&query=${searchValue}`);
+            setFilmsList(response.data.docs);
+        } catch (e) {
+            console.log(e);
+            if (e.request.status === 403){
+                switchApiKey();
+            }
         } finally {
-            setSearchValue('')
-            setIsLoader(false)
+            setSearchValue('');
+            setIsLoader(false);
         }
     }
 
     function switchApiKey() {
         setWhatApiKey(prevKey => (prevKey + 1) % api_keys.length);
     }
-
-    const saveScrollPosition = () => {
-        setScrollPosition(window.scrollY);
-    };
-
-    // Восстановление позиции прокрутки после загрузки данных
-    const restoreScrollPosition = () => {
-        window.scrollTo(0, scrollPosition);
-    };
-
-    const [open, setOpen] = React.useState(false);
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
@@ -113,18 +93,17 @@ function FilmsList() {
     }, [filmType, filtres, whatApiKey]);
 
     useEffect(() => {
-        saveScrollPosition();
         getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
     }, [filmListPage]);
-
-    useEffect(() => {
-        restoreScrollPosition();
-    }, [filmsList]);
 
     return (
         <section className={'FilmsListElement'}>
             <div className={'search'}>
-                <form onSubmit={FilmSearchName}>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    FilmSearchName(api_keys[whatApiKey])
+
+                }}>
                     <label>
                         <input
                             value={searchValue}
@@ -136,11 +115,8 @@ function FilmsList() {
                             placeholder={'Введите название'}
                         />
                         <button
-                            type="button"
+                            type="submit" // Замените "button" на "submit"
                             className={'SearchBtn'}
-                            onClick={() => {
-                                FilmSearchName(api_keys[whatApiKey])
-                            }}
                         >
                             <SavedSearchIcon/>
                         </button>
