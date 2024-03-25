@@ -374,4 +374,26 @@ FilterSearchBtn:active{
         color: black !important;
     }
 
+    /*=========================*/
+
+    .MuiList-root {
+        color: black;
+        background: var(--yel);
+    }
+
+    .css-1km1ehz{
+        border: 1px solid black !important;
+    }
+
+    .css-b1884d{
+        border: 1px solid black !important;
+    }
+
+    .css-13q0g9a::after{
+        border-bottom: 1px solid var(--yel) !important;
+    }
+
+    .css-1rgmeur, .css-1rgmeur.Mui-focused, .css-17gq4vl.css-17gq4vl.css-17gq4vl, .css-14x1nlk, .css-14x1nl{
+        color: black !important;
+    }
 }
