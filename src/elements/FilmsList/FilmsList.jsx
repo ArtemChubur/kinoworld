@@ -361,17 +361,17 @@ function FilmsList() {
                                     }}
                                     className={'FilmList-film'}
                                 >
-                                    <img className={'FilmPoster'} src={item.poster.previewUrl} alt=""/>
+                                    <img className={'FilmPoster'} src={item.poster?.previewUrl} alt=""/>
                                     <div className={'FilmsList-filmDescription'}>
                                         <h2 className={'filmsList-FilmTitle'}>{item.name}</h2>
                                         <div className={'genres'}>
-                                            {item.genres.map((item, idx) => {
+                                            {item?.genres.map((item, idx) => {
                                                 return (
-                                                    <p key={idx}>{item.name}</p>
+                                                    <p key={idx}>{item?.name}</p>
                                                 )
                                             })}
                                         </div>
-                                        <p>{item.year}</p>
+                                        <p>{item?.year}</p>
                                     </div>
                                 </div>
                             )
