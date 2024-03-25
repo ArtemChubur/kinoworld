@@ -231,8 +231,9 @@ FilterSearchBtn:active{
     display: none;
 }
 
-.css-13q0g9a{
+.MuiList-root {
     color: var(--yel);
+    background: black;
 }
 
 @media (max-width: 517px) {
