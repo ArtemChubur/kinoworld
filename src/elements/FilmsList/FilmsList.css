@@ -231,6 +231,10 @@ FilterSearchBtn:active{
     display: none;
 }
 
+.css-13q0g9a{
+    color: var(--yel);
+}
+
 @media (max-width: 517px) {
     .SearchInp{
         max-width: 45%;

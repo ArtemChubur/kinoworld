@@ -24,36 +24,16 @@ function FilmsList() {
     const [searchValue, setSearchValue] = useState('')
     const [filmListPage, setFilmListPage] = useState(1)
     const [open, setOpen] = React.useState(false);
-
-    async function getFilmsListNextPage(api_key, page) {
-        const filtresArray = Object.values(filtres)
-        let filtresElements = ''
-        filtresArray.map((item) => {filtresElements = filtresElements + item})
-        setIsLoader(true)
-        try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=30${filtresElements}&token=${api_key}&type=${filmType}`)
-            // setFilmsList(response.data.docs)
-            const addFilms = response.data.docs.map((item) => {
-                filmsList.push(item)
-            })
-        } catch (e) {
-            console.log(e)
-            if (e.request.status === 403){
-                switchApiKey();
-            }
-        } finally {
-            setSearchValue('')
-            setIsLoader(false)
-        }
-    }
+    const [loadMoreBtnVisible, setLoadMoreBtnVisible] = useState(true)
 
     async function getFilmList(apiKey){
         const filtresArray = Object.values(filtres)
         let filtresElements = ''
         filtresArray.map((item) => {filtresElements = filtresElements + item})
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
+            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=250${filtresElements}&token=${apiKey}&type=${filmType}`)
             setFilmsList(response.data.docs)
+            setLoadMoreBtnVisible(true)
         } catch (e){
             console.log(e)
             if (e.request.status === 403){
@@ -65,10 +45,35 @@ function FilmsList() {
         }
     }
 
+    async function getFilmsListNextPage(api_key, page) {
+        const filtresArray = Object.values(filtres)
+        let filtresElements = ''
+        filtresArray.map((item) => {filtresElements = filtresElements + item})
+        setIsLoader(true)
+        try {
+            const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=250${filtresElements}&token=${api_key}&type=${filmType}`)
+            // setFilmsList(response.data.docs)
+            const addFilms = response.data.docs.map((item) => {
+                filmsList.push(item)
+            })
+            setLoadMoreBtnVisible(true)
+        } catch (e) {
+            console.log(e)
+            if (e.request.status === 403){
+                switchApiKey();
+            } else {
+                setLoadMoreBtnVisible(true)
+            }
+        } finally {
+            setSearchValue('')
+            setIsLoader(false)
+        }
+    }
+
     async function FilmSearchName(apiKey) {
         setIsLoader(true);
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie/search?page=1&limit=30&token=${apiKey}&query=${searchValue}`);
+            const response = await axiosInstanceKinopoisk.get(`movie/search?page=1&limit=250&token=${apiKey}&query=${searchValue}&type=${filmType}`);
             setFilmsList(response.data.docs);
         } catch (e) {
             console.log(e);
@@ -102,6 +107,7 @@ function FilmsList() {
                 <form onSubmit={(e) => {
                     e.preventDefault();
                     FilmSearchName(api_keys[whatApiKey])
+                    setLoadMoreBtnVisible(false)
 
                 }}>
                     <label>
@@ -379,7 +385,7 @@ function FilmsList() {
                     </div>
                 }
             </div>
-            {filmsList.length === 0 ||
+            {loadMoreBtnVisible &&
                 <div className={'loadMore'}>
                     <input
                         className={'LoadMoreBtn'}
