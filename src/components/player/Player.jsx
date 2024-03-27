@@ -15,7 +15,7 @@ function Player() {
     async function getFilm() {
         setIsLoader(true)
         try {
-            const response = await axiosInstanceKinobox.get(`/players/main?query=${id}`)
+            const response = await axiosInstanceKinobox.get(`/players?query=${id}`)
             setFilm(response.data)
             console.log(response.data)
         } catch (e) {
