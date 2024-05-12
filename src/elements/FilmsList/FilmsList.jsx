@@ -15,23 +15,25 @@ import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/
 
 function FilmsList() {
     const api_keys = ['SD3MWNV-82PMJEM-PD7NGSV-F0V9YFX', 'XPXMBKB-6Z740AK-JNF897G-BVXZKBM', 'R89TYM0-4GAMXYJ-HBRVH4F-3XHY5B4', 'SH03P8B-PTZ4NQ1-QZD1TFX-G7965BT', 'Q76DWP0-CM5MXAJ-P2JZSR5-KY2H9AY']
-    const [filmsList, setFilmsList] = useState([]);
-    const [isLoader, setIsLoader] = useState(true);
-    const [filmType, setFilmType] = useState('')
     const navigate = useNavigate()
-    const [filtres, setFiltres] = useState({})
-    const [whatApiKey, setWhatApiKey] = useState(0);
-    const [searchValue, setSearchValue] = useState('')
-    const [filmListPage, setFilmListPage] = useState(1)
-    const [open, setOpen] = React.useState(false);
+
+    const [isLoader, setIsLoader] = useState(true);
     const [loadMoreBtnVisible, setLoadMoreBtnVisible] = useState(true)
+    const [open, setOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState('')
+    const [filmType, setFilmType] = useState('')
+    const [whatApiKey, setWhatApiKey] = useState(0);
+    const [filmListPage, setFilmListPage] = useState(1)
+    const [endFilmNum, setEndFilmNum] = useState(0)
+    const [filmsList, setFilmsList] = useState([]);
+    const [filtres, setFiltres] = useState({})
 
     async function getFilmList(apiKey){
         const filtresArray = Object.values(filtres)
         let filtresElements = ''
         filtresArray.map((item) => {filtresElements = filtresElements + item})
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=250${filtresElements}&token=${apiKey}&type=${filmType}`)
+            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
             setFilmsList(response.data.docs)
             setLoadMoreBtnVisible(true)
         } catch (e){
@@ -51,12 +53,13 @@ function FilmsList() {
         filtresArray.map((item) => {filtresElements = filtresElements + item})
         setIsLoader(true)
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=250${filtresElements}&token=${api_key}&type=${filmType}`)
+            const response = await axiosInstanceKinopoisk.get(`movie?page=${page}&limit=30${filtresElements}&token=${api_key}&type=${filmType}`)
             // setFilmsList(response.data.docs)
             const addFilms = response.data.docs.map((item) => {
                 filmsList.push(item)
             })
             setLoadMoreBtnVisible(true)
+            setEndFilmNum(prevState => prevState + 30)
         } catch (e) {
             console.log(e)
             if (e.request.status === 403){
@@ -100,6 +103,10 @@ function FilmsList() {
     useEffect(() => {
         getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
     }, [filmListPage]);
+
+    useEffect(() => {
+        navigate(`#filmCard${endFilmNum + 30}`)
+    }, [endFilmNum]);
 
     return (
         <section className={'FilmsListElement'}>

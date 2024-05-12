@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import './player.css'
@@ -16,7 +15,12 @@ function Player() {
         setIsLoader(true)
         try {
             const response = await axiosInstanceKinobox.get(`/players?query=${id}`)
-            setFilm(response.data)
+            const filteredFilm =  response.data.filter( (item) => {
+                if (item.iframeUrl) {
+                    return item
+                }
+            })
+            setFilm(filteredFilm)
             console.log(response.data)
         } catch (e) {
             console.log(e)
