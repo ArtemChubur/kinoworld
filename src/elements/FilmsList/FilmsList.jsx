@@ -36,6 +36,7 @@ function FilmsList() {
             const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
             setFilmsList(response.data.docs)
             setLoadMoreBtnVisible(true)
+            console.log(response.data.docs)
         } catch (e){
             console.log(e)
             if (e.request.status === 403){
@@ -58,6 +59,8 @@ function FilmsList() {
             const addFilms = response.data.docs.map((item) => {
                 filmsList.push(item)
             })
+
+
             setLoadMoreBtnVisible(true)
             setEndFilmNum(prevState => prevState + 30)
         } catch (e) {
@@ -78,6 +81,7 @@ function FilmsList() {
         try {
             const response = await axiosInstanceKinopoisk.get(`movie/search?page=1&limit=250&token=${apiKey}&query=${searchValue}&type=${filmType}`);
             setFilmsList(response.data.docs);
+            console.log(response)
         } catch (e) {
             console.log(e);
             if (e.request.status === 403){
