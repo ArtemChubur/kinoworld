@@ -11,6 +11,7 @@
 .FilmsList{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    margin: 0 auto;
 
 }
 
@@ -42,9 +43,9 @@
 }
 
 .FilmsList-filmDescription div, .FilmsList-filmDescription h2{
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     width: 300px;
 }
 
@@ -195,8 +196,14 @@ FilterSearchBtn:active{
 }
 
 .search{
+    margin: 10px auto;
     text-align: center;
-    margin: 10px;
+
+}
+
+.search form{
+    width: 100%;
+    /*margin: 10px -25%;*/
 }
 
 .errorFilmList{
@@ -259,7 +266,7 @@ FilterSearchBtn:active{
 @media (max-width: 517px) {
     .SearchInp{
         max-width: 45%;
-        margin-left: -60%;
+        /*margin-left: -60%;*/
     }
 
     .SearchBtn{
@@ -285,11 +292,23 @@ FilterSearchBtn:active{
 
     .search{
         display: flex;
-        margin-left: 6%;
+        justify-content: space-between;
+        /*margin-left: 6%;*/
+        /*width: 100%;*/
+
+    }
+
+    .search form {
+        /*width: 100%;*/
+        margin: 0 -24%;
+    }
+
+    .BurgerMenuBtn{
+        margin: auto 2% auto auto;
     }
 
     .FilmList-film{
-        margin-left: 2%;
+        /*margin-left: 2%;*/
     }
 
     .LoadMoreBtn{

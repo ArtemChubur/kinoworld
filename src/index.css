@@ -15,6 +15,12 @@ code {
     monospace;
 }
 
+
+*{
+  /*outline: 4px solid green !important;*/
+
+}
+
 :root{
   --yel: #FFC107;
 }
