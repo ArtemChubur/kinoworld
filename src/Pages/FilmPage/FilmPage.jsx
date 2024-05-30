@@ -7,7 +7,7 @@ function FilmPage(props) {
     return (
         <div>
             <DetailInfoFilm />
-            <section>
+            <section className={'FilmPage-playerSection'}>
                 <div className={'FilmPage-player'}>
                     <Player/>
                 </div>

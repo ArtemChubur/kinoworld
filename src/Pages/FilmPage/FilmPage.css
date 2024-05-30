@@ -1,4 +1,11 @@
+.FilmPage-playerSection{
+    width: 82%;
+}
+
 .FilmPage-player{
-    margin: 100px 15%;
-    width: 100%;
+    margin: 0 auto;
+    width: 75%;
+    /*margin: 100px 15%;*/
+    /*display: flex;*/
+    /*justify-content: center;*/
 }

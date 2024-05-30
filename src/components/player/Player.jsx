@@ -34,7 +34,7 @@ function Player() {
     }, []);
 
     return (
-        <div className="">
+        <div className="playerComponent">
             <div className={'player'}>
                 {isLoader ?
                     <div className={'LoadPlayer'}>

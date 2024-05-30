@@ -17,6 +17,10 @@ header h1{
 }
 
 @media (max-width: 517px) {
+    header{
+        width: 101.5%;
+    }
+
     header h1{
         margin-top: 40px;
     }
