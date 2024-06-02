@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './FilmsList.css'
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import {axiosInstanceKinopoisk} from "../../APIS/api/api";
 import {filmTypeConst} from "../../constants/FilmType";
 import {FilmGenresConst} from "../../constants/FilmGenres";
@@ -34,7 +34,7 @@ function FilmsList() {
         let filtresElements = ''
         filtresArray.map((item) => {filtresElements = filtresElements + item})
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=1&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
+            const response = await axiosInstanceKinopoisk.get(`movie?page=${filmListPage}&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
             setFilmsList(response.data.docs)
             setLoadMoreBtnVisible(true)
             console.log(response.data.docs)
@@ -46,6 +46,11 @@ function FilmsList() {
         } finally {
             setSearchValue('')
             setIsLoader(false)
+            window.scrollTo({
+                top: 250,
+                left: 0,
+                behavior: 'smooth'
+            });
         }
     }
 
@@ -101,15 +106,11 @@ function FilmsList() {
 
     useEffect(() => {
         getFilmList(api_keys[whatApiKey]);
-    }, [filmType, filtres, whatApiKey]);
+    }, [filmType, filtres, whatApiKey, filmListPage]);
 
-    useEffect(() => {
-        getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
-    }, [filmListPage]);
-
-    useEffect(() => {
-        navigate(`#filmCard${endFilmNum + 30}`)
-    }, [endFilmNum]);
+    // useEffect(() => {
+    //     getFilmsListNextPage(api_keys[whatApiKey], filmListPage)
+    // }, []);
 
     return (
         <section className={'FilmsListElement'}>
@@ -369,27 +370,27 @@ function FilmsList() {
                     <div className={'FilmsList'}>
                         {filmsList.map((item, idx) => {
                             return (
-                                <div
-                                    id={`filmCard${idx+1}`}
-                                    key={idx}
-                                    onClick={() => {
-                                        navigate(`/${item.id}`)
-                                    }}
+                                <Link
+                                    to={`/${item.id}`}
                                     className={'FilmList-film'}
+                                    key={idx}
                                 >
-                                    <img className={'FilmPoster'} src={item.poster ? item.poster.previewUrl : noImg} alt=""/>
-                                    <div className={'FilmsList-filmDescription'}>
-                                        <h2 className={'filmsList-FilmTitle'}>{item.name}</h2>
-                                        <div className={'genres'}>
-                                            {item?.genres?.map((item, idx) => {
-                                                return (
-                                                    <p key={idx}>{item?.name}</p>
-                                                )
-                                            })}
+                                    <div>
+                                        <img className={'FilmPoster'} src={item.poster ? item.poster.previewUrl : noImg}
+                                             alt=""/>
+                                        <div className={'FilmsList-filmDescription'}>
+                                            <h2 className={'filmsList-FilmTitle'}>{item.name}</h2>
+                                            <div className={'genres'}>
+                                                {item?.genres?.map((item, idx) => {
+                                                    return (
+                                                        <p key={idx}>{item?.name}</p>
+                                                    )
+                                                })}
+                                            </div>
+                                            <p>{item?.year}</p>
                                         </div>
-                                        <p>{item?.year}</p>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })}
                     </div>
@@ -399,7 +400,15 @@ function FilmsList() {
                 <div className={'loadMore'}>
                     <input
                         className={'LoadMoreBtn'}
-                        type="button" value={'Загрузить еще'}
+                        type="button" value={'Назад'}
+                        disabled={filmListPage === 1}
+                        onClick={() => {
+                            setFilmListPage(filmListPage - 1)
+                        }}
+                    />
+                    <input
+                        className={'LoadMoreBtn'}
+                        type="button" value={'Вперед'}
                         onClick={() => {
                             setFilmListPage(filmListPage + 1)
                         }}
