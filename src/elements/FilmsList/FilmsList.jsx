@@ -10,6 +10,7 @@ import {filmYearConst} from "../../constants/FilmYear";
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
 import Drawer from '@mui/material/Drawer';
 import {CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import noImg from '../../assets/noPhoto.png'
 
 
 
@@ -59,8 +60,6 @@ function FilmsList() {
             const addFilms = response.data.docs.map((item) => {
                 filmsList.push(item)
             })
-
-
             setLoadMoreBtnVisible(true)
             setEndFilmNum(prevState => prevState + 30)
         } catch (e) {
@@ -378,7 +377,7 @@ function FilmsList() {
                                     }}
                                     className={'FilmList-film'}
                                 >
-                                    <img className={'FilmPoster'} src={item.poster?.previewUrl} alt=""/>
+                                    <img className={'FilmPoster'} src={item.poster ? item.poster.previewUrl : noImg} alt=""/>
                                     <div className={'FilmsList-filmDescription'}>
                                         <h2 className={'filmsList-FilmTitle'}>{item.name}</h2>
                                         <div className={'genres'}>
