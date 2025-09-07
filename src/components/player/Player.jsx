@@ -15,13 +15,13 @@ function Player() {
         setIsLoader(true)
         try {
             const response = await axiosInstanceKinobox.get(`/players?query=${id}`)
-            const filteredFilm =  response.data.filter( (item) => {
+            const filteredFilm =  response.data.data.filter( (item) => {
                 if (item.iframeUrl) {
                     return item
                 }
             })
             setFilm(filteredFilm)
-            console.log(response.data)
+
         } catch (e) {
             console.log(e)
         } finally {

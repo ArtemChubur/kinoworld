@@ -34,17 +34,20 @@ function FilmsList() {
         let filtresElements = ''
         filtresArray.map((item) => {filtresElements = filtresElements + item})
         try {
-            const response = await axiosInstanceKinopoisk.get(`movie?page=${filmListPage}&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`)
-            setFilmsList(response.data.docs)
+            const response = await axiosInstanceKinopoisk.get(`films/collections?page=${filmListPage}&limit=30${filtresElements}&token=${apiKey}&type=${filmType}`, {
+                headers: {
+                    'X-API-KEY': '58c04246-0d2c-4ca8-ac44-176c8ed25419',
+                    'Content-Type': 'application/json',
+                }
+            })
+            setFilmsList(response.data.items)
             setLoadMoreBtnVisible(true)
-            console.log(response.data.docs)
         } catch (e){
             console.log(e)
             if (e.request.status === 403){
                 switchApiKey();
             }
         } finally {
-            setSearchValue('')
             setIsLoader(false)
             window.scrollTo({
                 top: 250,
@@ -85,7 +88,6 @@ function FilmsList() {
         try {
             const response = await axiosInstanceKinopoisk.get(`movie/search?page=1&limit=250&token=${apiKey}&query=${searchValue}&type=${filmType}`);
             setFilmsList(response.data.docs);
-            console.log(response)
         } catch (e) {
             console.log(e);
             if (e.request.status === 403){
@@ -371,19 +373,19 @@ function FilmsList() {
                         {filmsList.map((item, idx) => {
                             return (
                                 <Link
-                                    to={`/${item.id}`}
+                                    to={`/${item.kinopoiskId}`}
                                     className={'FilmList-film'}
                                     key={idx}
                                 >
                                     <div>
-                                        <img className={'FilmPoster'} src={item.poster ? item.poster.previewUrl : noImg}
+                                        <img className={'FilmPoster'} src={item.posterUrl ? item.posterUrl : noImg}
                                              alt=""/>
                                         <div className={'FilmsList-filmDescription'}>
-                                            <h2 className={'filmsList-FilmTitle'}>{item.name}</h2>
+                                            <h2 className={'filmsList-FilmTitle'}>{item.nameRu ? item.nameRu : item.nameEn}</h2>
                                             <div className={'genres'}>
                                                 {item?.genres?.map((item, idx) => {
                                                     return (
-                                                        <p key={idx}>{item?.name}</p>
+                                                        <p key={idx}>{item?.genre}</p>
                                                     )
                                                 })}
                                             </div>
